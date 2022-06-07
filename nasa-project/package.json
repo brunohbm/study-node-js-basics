@@ -10,6 +10,7 @@
     "install-server": "yarn --cwd ./server install",
     "install-client": "yarn --cwd ./client install",
     "install": "yarn install-server & yarn install-client",
+    "deploy": "yarn --cwd ./client build & yarn --cwd ./server start",
     "test": "yarn --cwd ./server test & yarn --cwd ./client test"
   }
 }
