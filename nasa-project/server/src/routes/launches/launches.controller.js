@@ -1,12 +1,23 @@
 const {
-    launches
+    addNewLaunch,
+    getAllLaunches,
 } = require("../../models/launches.model");
 
-function getAllLaunches(req, res) {
-    const formattedLaunches = Array.from(launches.values());
-    return res.status(200).json(formattedLaunches);
+function httpGetAllLaunches(req, res) {
+    const launches = getAllLaunches();
+    return res.status(200).json(launches);
+};
+
+function httpSaveLaunch(req, res) {
+    const launch = req.body;
+
+    launch.launchDate = new Date(launch.launchDate);
+    addNewLaunch(launch);
+
+    return res.status(201).json(launch);
 };
 
 module.exports = {
-    getAllLaunches,
+    httpSaveLaunch,
+    httpGetAllLaunches,
 };
