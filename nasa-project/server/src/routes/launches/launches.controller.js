@@ -24,7 +24,7 @@ function httpSaveLaunch(req, res) {
         return !newLaunch[field];
     });
 
-    if(invalidFields.length) {
+    if (invalidFields.length) {
         return res.status(400).json({
             error: `Missing required launch properties: ${invalidFields.join(', ')}`
         });
@@ -32,7 +32,7 @@ function httpSaveLaunch(req, res) {
 
     newLaunch.launchDate = new Date(newLaunch.launchDate);
 
-    if(isNaN(newLaunch.launchDate)) {
+    if (isNaN(newLaunch.launchDate)) {
         return res.status(400).json({ error: 'Invalid launch date' });
     }
 
@@ -44,7 +44,7 @@ function httpSaveLaunch(req, res) {
 function httpAbortLaunch(req, res) {
     const launchId = Number(req.params.id);
 
-    if(!existsLaunchWithId(launchId)) {
+    if (!existsLaunchWithId(launchId)) {
         return res.status(404).json({
             error: 'Launch not found',
         });
