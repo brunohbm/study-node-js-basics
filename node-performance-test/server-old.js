@@ -1,4 +1,6 @@
 const express = require('express');
+const cluster = require('cluster');
+const os = require('os');
 
 const app = express();
 
@@ -20,4 +22,15 @@ app.get('/timer', (req, res) => {
     res.send(`GET with delay  ${process.pid}`);
 });
 
-app.listen(3000);
+// isMaster indicates if the first process has already started.
+if (cluster.isMaster) {
+    const NUM_WORKERS = os.cpus().length;
+
+    for (let index = 0; index < NUM_WORKERS; index++) {
+        // Fork creates a new Worker for the process.
+        cluster.fork();
+        console.log('Fork created!');
+    }
+} else {
+    app.listen(3000);
+}
