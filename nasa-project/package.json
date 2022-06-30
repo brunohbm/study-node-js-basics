@@ -11,6 +11,7 @@
     "install-client": "yarn --cwd ./client install",
     "install": "yarn install-server & yarn install-client",
     "deploy": "yarn --cwd ./client build & yarn --cwd ./server start",
+    "deploy-cluster": "yarn --cwd ./client build & yarn --cwd ./server cluster",
     "test": "yarn --cwd ./server test & yarn --cwd ./client test"
   }
 }
