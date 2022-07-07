@@ -12,8 +12,8 @@ const NEW_LAUNCH_REQUIRED_VALUES = [
     'destination',
 ];
 
-function httpGetAllLaunches(req, res) {
-    const launches = getAllLaunches();
+async function httpGetAllLaunches(req, res) {
+    const launches = await getAllLaunches();
     return res.status(200).json(launches);
 };
 

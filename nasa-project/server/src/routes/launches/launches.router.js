@@ -6,8 +6,8 @@ const {
 } = require('./launches.controller');
 
 const launchesRouter = express.Router();
-
 launchesRouter.get('/', httpGetAllLaunches);
+
 launchesRouter.post('/', httpSaveLaunch);
 launchesRouter.delete('/:id', httpAbortLaunch);
 

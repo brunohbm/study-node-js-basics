@@ -1,3 +1,8 @@
+const launchesDatabase = require("./launches.mongo");
+const planets = require("./planets.mongo");
+
+const DEFAULT_FLIGHT_NUMBER = 100;
+
 const launches = new Map();
 
 let nextFlightNumber = 100;
@@ -6,21 +11,45 @@ const launch = {
     success: true,
     upcoming: true,
     rocket: 'Explorer IS1',
-    customer: ['ZTM', 'NASA'],
+    customers: ['ZTM', 'NASA'],
     destination: 'Kepler-442 b',
     flightNumber: nextFlightNumber,
     mission: 'Kepler Exploration X',
     launchDate: new Date('December 27, 2030'),
 };
 
-launches.set(launch.flightNumber, launch);
+async function saveLaunch(newLaunch) {
+    const planet = await planets.findOne({
+        keplerName: newLaunch.destination,
+    });
+
+    if(!planet) throw new Error('No matching planet found!');
+
+    await launchesDatabase.updateOne({
+        flightNumber: newLaunch.flightNumber,
+    }, newLaunch, { upsert: true });
+}
+
+saveLaunch(launch);
 
 function existsLaunchWithId(launchId) {
     return launches.has(launchId);
 }
 
-function getAllLaunches() {
-    return Array.from(launches.values());
+async function getLatestFlightNumber() {
+    const latestFlight = await launchesDatabase
+        .findOne()
+        .sort("-flightNumber");
+
+    if(!latestFlight) return DEFAULT_FLIGHT_NUMBER;
+
+    return latestFlight.flightNumber;
+}
+
+async function getAllLaunches() {
+    return await launchesDatabase.find({}, {
+        "_id": 0, "__v": 0
+    });
 }
 
 function addNewLaunch(launchData) {
@@ -30,7 +59,7 @@ function addNewLaunch(launchData) {
         success: true,
         upcoming: true,
         flightNumber: nextFlightNumber,
-        customer: ['Zero to Master', 'NASA'],
+        customers: ['Zero to Master', 'NASA'],
     });
 
     launches.set(nextFlightNumber, newLaunch);
