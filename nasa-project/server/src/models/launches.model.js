@@ -1,7 +1,9 @@
+const axios = require("axios");
 const launchesDatabase = require("./launches.mongo");
 const planets = require("./planets.mongo");
 
 const DEFAULT_FLIGHT_NUMBER = 100;
+const SPACEX_API_URL = 'https://api.spacexdata.com/v4';
 
 async function saveLaunch(newLaunch) {
     const planet = await planets.findOne({
@@ -59,11 +61,48 @@ async function abortLaunchById(launchId) {
     });
 
     return abortedLaunch.modifiedCount === 1;
+};
+
+async function loadLaunchesData() {
+    const { data: { docs } } = await axios.post(`${SPACEX_API_URL}/launches/query`, {
+        query: {},
+        options: {
+            populate: [
+                { path: 'rocket', select: { name: 1 } },
+                { path: 'payloads', select: { customers: 1 } }
+            ]
+        }
+    });
+
+    const spaceXLauches = docs.map(doc => {
+        const {
+            flight_number: flightNumber,
+            name,
+            rocket,
+            date_local: launchDate,
+            upcoming,
+            success,
+            payloads,
+        } = doc;
+
+        return {
+            flightNumber,
+            mission: name,
+            rocket: rocket.name,
+            launchDate,
+            upcoming,
+            success,
+            customers: payloads.flatMap(payload => payload.customers),
+        };
+    });
+    
+    console.log(spaceXLauches);
 }
 
 module.exports = {
     getAllLaunches,
     abortLaunchById,
+    loadLaunchesData,
     scheduleNewLaunch,
     existsLaunchWithId,
 };
