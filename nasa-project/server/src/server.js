@@ -1,6 +1,5 @@
 require('./config');
 const http = require('http');
-const mongoose = require('mongoose');
 const app = require('./app');
 const { loadPlanetsData } = require('./models/planets.model');
 const { mongoConnect } = require('./services/mongo');

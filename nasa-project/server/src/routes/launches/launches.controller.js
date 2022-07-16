@@ -4,6 +4,7 @@ const {
     scheduleNewLaunch,
     existsLaunchWithId,
 } = require("../../models/launches.model");
+const { getPagination } = require("../../services/query");
 
 const NEW_LAUNCH_REQUIRED_VALUES = [
     'mission',
@@ -13,7 +14,8 @@ const NEW_LAUNCH_REQUIRED_VALUES = [
 ];
 
 async function httpGetAllLaunches(req, res) {
-    const launches = await getAllLaunches();
+    const { skip, limit } = getPagination(req.query);
+    const launches = await getAllLaunches(skip, limit);
     return res.status(200).json(launches);
 };
 

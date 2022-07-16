@@ -16,7 +16,6 @@ const launchesSchema = new mongoose.Schema({
     customers: [String],
     destination: {
         type: String,
-        required: true,
     },
     flightNumber: {
         type: Number,

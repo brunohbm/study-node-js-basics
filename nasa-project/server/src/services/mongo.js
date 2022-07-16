@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const MONGO_DB_PASSWORD = process.env.MONGO_DB_PASSWORD || 'TEST_MONGO_DB_PASSWORD';
-const MONGO_CONNECTION_URI = `mongodb+srv://nasa-api:${MONGO_DB_PASSWORD}@nasaapi.mnhykjz.mongodb.net/?retryWrites=true&w=majority`;
+const MONGO_CONNECTION_URI = process.env.MONGO_DB_URL;
 
 
 mongoose.connection.once('open', () => {
